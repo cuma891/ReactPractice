@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import EmployeeList from './components/EmployeeList.jsx'
+import EmployeeList from './components/EmployeeMgmt.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import './App.css';
