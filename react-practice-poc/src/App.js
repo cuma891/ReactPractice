@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import EmployeeList from './components/EmployeeList.jsx'
+import EmployeeList from './components/EmployeeMgmt.jsx'
 import Login from './components/Login.js'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
