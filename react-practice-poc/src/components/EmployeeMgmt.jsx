@@ -66,6 +66,21 @@ export default function EmployeeList() {
             });
         }
       };
+
+      const handleDeleteClick = (employeeId) => {
+        if (window.confirm("Are you sure you want to delete this employee?")) {
+            axios.delete(`http://localhost:8080/employee/${employeeId}`)
+                .then(response => {
+                    // Remove the deleted employee from the state
+                    setEmployees(prevEmployees => prevEmployees.filter(emp => emp.id !== employeeId));
+                    console.log("Employee deleted successfully");
+                })
+                .catch(error => {
+                    console.error("There was an error deleting the employee", error);
+                });
+        }
+    };
+
     return (
         <div className="flex flex-col justify-center  w-full mt-28" >
             <div>
@@ -99,7 +114,7 @@ export default function EmployeeList() {
                                 </button>
                             </td>
                             <td className="px-4 py-4">
-                                <button className="border border-zinc-400 bg-red-600 p-1 rounded-xl text-white w-full">
+                                <button className="border border-zinc-400 bg-red-600 p-1 rounded-xl text-white w-full" onClick={() => handleDeleteClick(employee.id )}>
                                     Delete
                                 </button>
                             </td>

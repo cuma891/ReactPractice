@@ -5,7 +5,7 @@ import Login from './components/Login.js'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import './App.css';
-import AddEmployee from './components/AddEmployee.jsx';
+
 
 function App() {
 
@@ -49,7 +49,6 @@ function App() {
         ) : (
         <Routes>
           <Route path='/employeeList' element={<EmployeeList />} />
-          <Route path='/addEmployee' element={<AddEmployee />} />
         </Routes> )}
         <Footer />
         {showLoginDialog && <Login onClose={closeLoginDialog} setIsLoggedIn={setIsLoggedIn} />}
