@@ -4,6 +4,15 @@ import '../output.css'
 
 export default function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [editData, setEditData] = useState({
+      name: '',
+      age: '',
+      email: '',
+      address: '',
+      salary: ''
+    });
+    const [isModalOpen, setIsModalOpen] = useState(false);  // State for opening the modal
     useEffect(() => {
         async function getEmployeeList() {
             await axios({
@@ -19,6 +28,44 @@ export default function EmployeeList() {
 
         getEmployeeList();
     }, [])
+    const handleEditClick = (employee) => {
+        setSelectedEmployee(employee);
+        setEditData({
+          name: employee.name,
+          age: employee.age,
+          email: employee.email,
+          address: employee.address,
+          salary: employee.salary
+        });
+        setIsModalOpen(true); // Open the modal when "Edit" is clicked
+      };
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditData(prevState => ({
+          ...prevState,
+          [name]: value
+        }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (selectedEmployee) {
+          const { id } = selectedEmployee;
+          axios.put(`http://localhost:8080/employee/${id}`, editData)
+            .then(response => {
+              // Update the employee list after successful update
+              const updatedEmployees = [...employees];
+              const index = updatedEmployees.findIndex(emp => emp.id === id);
+              updatedEmployees[index] = response.data;
+              setEmployees(updatedEmployees);
+              setIsModalOpen(false); // Close modal after submitting
+            })
+            .catch(error => {
+              console.error("There was an error updating the employee data!", error);
+            });
+        }
+      };
     return (
         <div className="flex flex-col justify-center  w-full mt-28" >
             <div>
@@ -47,7 +94,7 @@ export default function EmployeeList() {
                             <td className="px-6 py-4">{employee.address}</td>
                             <td className="px-6 py-4">{employee.salary}</td>
                             <td className="px-4 py-4">
-                                <button className="border border-zinc-400 bg-blue-600 p-1 rounded-xl text-white w-full">
+                                <button className="border border-zinc-400 bg-blue-600 p-1 rounded-xl text-white w-full" onClick={() => handleEditClick(employee)}>
                                     Edit
                                 </button>
                             </td>
@@ -62,6 +109,63 @@ export default function EmployeeList() {
                 </tbody>
             </table>
             </div>
+            {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Edit Employee</h3>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editData.name}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>Age:</label>
+                <input
+                  type="number"
+                  name="age"
+                  value={editData.age}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={editData.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>Address:</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={editData.address}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>Salary:</label>
+                <input
+                  type="number"
+                  name="salary"
+                  value={editData.salary}
+                  onChange={handleChange}
+                />
+              </div>
+              <button type="submit">Submit</button>
+              <button type="button" className="close-button" onClick={() => setIsModalOpen(false)}>Close</button>
+            </form>
+          </div>
         </div>
+      )}
+        </div>
+        
     )
 }
