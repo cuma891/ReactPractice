@@ -35,6 +35,10 @@ export default function AddEmployee({onClose, onSave, isAdd, editData}){
             .then(response => {
               console.log(response);
               onSave(response.data);
+            })
+            .catch(err => {
+              console.error("There was an error adding the employee data!", err);
+              window.alert(err.response.data);
             });
       }
       else{
