@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from "@react-oauth/google"
 
 export default function Login({onClose, setIsLoggedIn}){
 
@@ -15,6 +16,16 @@ export default function Login({onClose, setIsLoggedIn}){
         setIsLoggedIn(true);
         navigate('/employeeList'); 
       };
+
+      const onSuccess = (response) => {
+        console.log('Login Successful:', response.credential);
+       // handleGoogleLogin(response);
+      };
+    
+      const onError = () => {
+        console.error('Login Failed');
+      };
+  
 
     return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -54,6 +65,18 @@ export default function Login({onClose, setIsLoggedIn}){
             Cancel
           </button>
         </div>
+        <GoogleLogin
+              onSuccess={onSuccess}
+              onError={onError}
+              size="large"
+              text='continue_with'
+              theme="outline"
+              locale="en"
+              useOneTap="true"
+              logo_alignment="center"
+                >
+            </GoogleLogin>
+            
       </div>
     </div>
   );
