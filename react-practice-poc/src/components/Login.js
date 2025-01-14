@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from "@react-oauth/google"
+import axios from 'axios';
 
 export default function Login({onClose, setIsLoggedIn}){
 
@@ -19,13 +20,39 @@ export default function Login({onClose, setIsLoggedIn}){
 
       const onSuccess = (response) => {
         console.log('Login Successful:', response.credential);
-       // handleGoogleLogin(response);
+        handleGoogleLogin(response);
       };
     
       const onError = () => {
         console.error('Login Failed');
       };
   
+      const handleGoogleLogin = async (res) => {
+        try {
+          console.log("res---",res);
+          const tokenMap = JSON.stringify({'idToken' : res.credential});
+          const response = await axios.post('http://localhost:8080/auth/google', tokenMap, {
+            headers: {
+              'Content-Type': 'application/json', // Ensure Content-Type is correct
+            },
+          });
+          console.log(response);
+          // setSuccess(response.data.body); 
+          // login(response.data);
+          // setError("");
+          setTimeout(() => {
+            //onLoginClose();
+            onClose();
+            setIsLoggedIn(true);
+            navigate('/employeeList');
+          }, 1000); 
+    
+        
+        } catch (err) {
+          alert(err.response?.data || 'Something went wrong');
+         // setError(err.response?.data || 'Something went wrong');
+        }
+      };
 
     return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -65,18 +92,19 @@ export default function Login({onClose, setIsLoggedIn}){
             Cancel
           </button>
         </div>
+        <div className="mt-3">
         <GoogleLogin
               onSuccess={onSuccess}
               onError={onError}
               size="large"
               text='continue_with'
-              theme="outline"
+              theme="filled_blue"
               locale="en"
               useOneTap="true"
-              logo_alignment="center"
+              logo_alignment="left"
                 >
             </GoogleLogin>
-            
+          </div>
       </div>
     </div>
   );
